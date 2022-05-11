@@ -1,22 +1,31 @@
-from google.cloud import vision
+
 
 
 class FaceAPIError(Exception):
     pass
 
-
 def detect_faces(content: bytes):
-    """Detects faces in an image."""
-    client = vision.ImageAnnotatorClient()
-    image = vision.Image(content=content)
+    vertices = [{
+                "x": 1112,
+                "y": 407
+              },
+              {
+                "x": 1946,
+                "y": 407
+              },
+              {
+                "x": 1946,
+                "y": 1270
+              },
+              {
+                "x": 1112,
+                "y": 1270
+              }]
+    return [tuple(
+        (vertex['x'], vertex['y'])
+         for vertex in vertices
+    )]
 
-    response = client.face_detection(image=image)
-    if response.error.message:
-        raise FaceAPIError(response.error.message)
-
-    return [tuple((vertex.x, vertex.y)
-                  for vertex in face.bounding_poly.vertices)
-            for face in response.face_annotations]
 
 
 if __name__ == '__main__':
